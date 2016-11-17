@@ -29,6 +29,20 @@ uint32_t ht_getrkey(uint32_t key)
 }
 
 
+ht_element*  ht_find_notnull(ht* ht, uint32_t key)
+{
+
+	ht_element* el = ht_get(ht, key, 0);
+
+	int i=0;
+	do {
+		el++;
+	} while (el->key != 0 && ++i < HT_ELEMENTS);
+	printf("i=%d\n", i);	
+	return el;
+
+}
+
 void ht_add(ht* ht, uint32_t key, const char* value)
 {
 	ht_element* el = ht_get(ht, key, 0);
@@ -36,8 +50,8 @@ void ht_add(ht* ht, uint32_t key, const char* value)
 	int i=0;
 	do {
 		el++;
-		printf("i=%d\n", i);
-	} while ( ++i < HT_ELEMENTS && el->key != 0);
+	} while (el->key != 0 && ++i < HT_ELEMENTS);
+	printf("i=%d\n", i);
 
 
 }

@@ -79,6 +79,27 @@ test_add(void)
 	footer();
 }
 
+static void
+test_find(void)
+{
+	header();
+
+	uint32_t key = 0xcd198be0;
+	char value[2] = {'a','b'};
+
+	ht ht;
+	ht_init(&ht);
+
+	ht_set(&ht, key, (char*)value, 0);
+	ht_set(&ht, key, (char*)value, 1);
+	ht_element* el = ht_find_notnull(&ht, key);
+
+//	is(1, 1, "test add");
+
+	ht_free(&ht);
+
+	footer();
+}
 
 int
 main(void)
@@ -87,5 +108,6 @@ main(void)
 	test_getrkey();
 	test_set();
 	test_add();
+	test_find();
 }
 

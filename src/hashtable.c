@@ -29,8 +29,16 @@ uint32_t ht_getrkey(uint32_t key)
 }
 
 
-void ht_add(ht* ht, uint32_t key, char* value)
+void ht_add(ht* ht, uint32_t key, const char* value)
 {
+	ht_element* el = ht_get(ht, key, 0);
+
+	int i=0;
+	do {
+		el++;
+		printf("i=%d\n", i);
+	} while ( ++i < HT_ELEMENTS && el->key != 0);
+
 
 }
 
@@ -50,7 +58,7 @@ ht_element*  ht_get(ht* ht, uint32_t key, int index)
 	return &pline->elem[index];
 }
 
-void ht_set(ht* ht, uint32_t key, char* value, int index)
+void ht_set(ht* ht, uint32_t key, const char* value, int index)
 {
 
 	if (index >= HT_ELEMENTS)
@@ -61,5 +69,6 @@ void ht_set(ht* ht, uint32_t key, char* value, int index)
 
 	ht_element *el = pline->elem + index;
 	el->key = ht_getrkey(key);
+	memcpy((void*)el->data, (const void*)value, 2);
 }
 

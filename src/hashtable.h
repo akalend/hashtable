@@ -20,5 +20,8 @@ typedef struct  {
 void ht_init( ht* ht);
 void ht_free( ht* ht);
 
+uint32_t ht_getlkey(uint32_t key);
+uint32_t ht_getrkey(uint32_t key);
+
 
 #endif /* __HTABLE_H_  */

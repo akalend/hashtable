@@ -19,3 +19,14 @@ void ht_free(ht* ht)
 {
 	free(ht->line);
 }
+
+
+uint32_t ht_getlkey(uint32_t key)
+{
+	return key >> 16;
+}
+
+uint32_t ht_getrkey(uint32_t key)
+{
+	return key & 0x0000FFFF;
+}

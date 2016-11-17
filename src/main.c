@@ -13,7 +13,7 @@
 
 int main(int argc, char** argv )
 {
-	FILE* fp = fopen("../test/test.file.txt", "r");
+	FILE* fp = fopen("../tools/test.file.txt", "r");
 	char line[128];
 
 	ht ht;
@@ -22,8 +22,6 @@ int main(int argc, char** argv )
 
 	ht_free(&ht);
 
-
-	return 0;
 
     if( fp == NULL ) {  
     	printf("file not found\n");                     

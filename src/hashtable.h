@@ -2,9 +2,12 @@
 #ifndef  __HTABLE_H_
 #define  __HTABLE_H_
 
-#define BUCKET_SIZE 65536
-#define LINE_SIZE sizeof(ht_line)
-#define HT_ELEMENTS 64
+#define BUCKET_SIZE 	65536
+#define LINE_SIZE 		sizeof(ht_line)
+#define HT_ELEMENTS 	64
+#define HT_OK 			0
+#define HT_FAIL 		-1
+
 
 
 typedef struct  {
@@ -25,10 +28,7 @@ typedef struct  {
 void ht_init( ht* ht);
 void ht_free( ht* ht);
 
-uint32_t ht_getlkey(uint32_t key);
-uint32_t ht_getrkey(uint32_t key);
-
-ht_element*  ht_find_notnull(ht* ht, uint32_t key);
+int ht_find_notnull(ht* ht, uint32_t key);
 void ht_add(ht* ht, uint32_t key, const char* value);
 
 void ht_set(ht* ht, uint32_t key, const char* value, int index);

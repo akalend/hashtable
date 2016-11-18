@@ -10,34 +10,6 @@
 
 
 static void
-test_getlkey(void)
-{
-	header();
-
-	uint32_t crc = 0xcd198be0;
-
-	uint32_t key = ht_getlkey(crc);	
-	is(0xcd19, key, "0xcd19 == key");
-
-
-	footer();
-}
-
-static void
-test_getrkey(void)
-{
-	header();
-
-	uint32_t crc = 0xcd198be0;
-	uint32_t key = ht_getrkey(crc);
-	
-	is(0x8be0, key, "0x8be0 == key");
-
-	footer();
-}
-
-
-static void
 test_set(void)
 {
 	header();
@@ -90,11 +62,29 @@ test_find(void)
 	ht ht;
 	ht_init(&ht);
 
-	ht_set(&ht, key, (char*)value, 0);
-	ht_set(&ht, key, (char*)value, 1);
-	ht_element* el = ht_find_notnull(&ht, key);
+	int i = ht_find_notnull(&ht, key);
 
-//	is(1, 1, "test add");
+	is(i, 0, "key null");
+
+
+	ht_set(&ht, key, (char*)value, 0);
+	i = ht_find_notnull(&ht, key);
+
+	is(i, 1, "key=%d [1]", i);
+
+
+	ht_set(&ht, key, (char*)value, 1);
+
+	i = ht_find_notnull(&ht, key);
+
+	is(i, 2, "key=%d [2]",i);
+
+
+	ht_set(&ht, key, (char*)value, 2);
+
+	i = ht_find_notnull(&ht, key);
+
+	is(i, 3, "key=%d [3]",i);
 
 	ht_free(&ht);
 
@@ -104,10 +94,10 @@ test_find(void)
 int
 main(void)
 {
-	test_getlkey();
-	test_getrkey();
-	test_set();
-	test_add();
+	// test_getlkey();
+	// test_getrkey();
+	// test_set();
+	// test_add();
 	test_find();
 }
 

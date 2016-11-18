@@ -50,22 +50,21 @@ test_find(void)
 
 	ht_set(&ht, key, (char*)value, 0);
 	i = ht_find_notnull(&ht, key);
-
 	is(i, 1, "key=%d [1]", i);
 
 
 	ht_set(&ht, key, (char*)value, 1);
-
 	i = ht_find_notnull(&ht, key);
-
 	is(i, 2, "key=%d [2]",i);
 
 
 	ht_set(&ht, key, (char*)value, 2);
-
 	i = ht_find_notnull(&ht, key);
-
 	is(i, 3, "key=%d [3]",i);
+
+	ht_set(&ht, key, (char*)value, 3);
+	i = ht_find_notnull(&ht, key);
+	is(i, 4, "key=%d [4]",i);
 
 	ht_free(&ht);
 
@@ -88,15 +87,21 @@ test_add(void)
 
 	value[0] = 'c';
 	value[1] = 'd';
-
 	ht_add(&ht, key, value);
 
 	ht_element* get_key = ht_get(&ht, key, 0);
-	is( strncmp("ab", get_key->data,2) , 0, "ab == data");
+	is(strncmp("ab", get_key->data, 2) , 0, "ab == data");
 
 	get_key = ht_get(&ht, key, 1);
-	is( strncmp("cd", get_key->data,2) , 0, "cd == data");
+	is(strncmp("cd", get_key->data, 2) , 0, "cd == data");
 
+
+	value[0] = 'x';
+	value[1] = 'z';
+	ht_add(&ht, key, value);
+
+	get_key = ht_get(&ht, key, 2);
+	is(strncmp("xz", get_key->data, 2) , 0, "xz == data");
 
 	ht_free(&ht);
 
@@ -106,9 +111,7 @@ test_add(void)
 int
 main(void)
 {
-	// test_getlkey();
-	// test_getrkey();
-	// test_set();	
+	test_set();	
 	test_find();
 	test_add();
 }

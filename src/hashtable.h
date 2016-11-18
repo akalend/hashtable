@@ -6,7 +6,8 @@
 #define LINE_SIZE 		sizeof(ht_line)
 #define HT_ELEMENTS 	64
 #define HT_OK 			0
-#define HT_FAIL 		-1
+#define HT_FAIL			1
+#define HT_ERROR 		-1
 
 
 

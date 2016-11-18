@@ -7,6 +7,7 @@
 #define HT_ELEMENTS 	64
 #define HT_OK 			0
 #define HT_FAIL			1
+#define HT_EXITS		2
 #define HT_ERROR 		-1
 
 

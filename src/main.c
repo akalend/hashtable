@@ -18,15 +18,13 @@ int main(int argc, char** argv )
 	ht ht;
 	ht_init(&ht);
 
-
     if( fp == NULL ) {  
     	printf("file not found\n");                     
         return 1;
     }
 
-	uint32_t crc_1 = 0xcd1944ce & 0xFFFF0000;
-
-    int n = 100;
+	int res;
+    int n = 20;
     while( fgets(line,128,fp) && n--  ) {
 
     	size_t len = strlen(line);
@@ -35,16 +33,23 @@ int main(int argc, char** argv )
 		
 		crc = crc32(crc, (const void *) line, len);
 
-		ht_add(&ht, crc, line);
-		int res = ht_check(&ht, crc, line);
-		if (res == HT_OK) {
-			printf("%x:\t%d\t%10s\n", crc, res, line);
+		if (0x61e4e146 == crc) {
+			printf("%x:***\t%10s", crc, line);
 		}
+
+		res = ht_add(&ht, crc, line);
+		printf("%d\t#%d. ", n, res);
+
+		res = ht_check(&ht, crc, line);
+		// if (res == HT_OK) {
+			printf("%x:\t%d\t%10s", crc, res, line);
+		// }
     }
 
 		
 
 	ht_free(&ht);
+	fclose(fp);
 
 	return 0;
 } 

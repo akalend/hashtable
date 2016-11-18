@@ -83,19 +83,65 @@ test_not_add(void)
 	ht_init(&ht);
 
 	int res = ht_check(&ht, key, value);
-	printf("ht_result %d\n", res);
-	is( res, 1, "zz not find [%d %.2s]", res, value);	
+	printf("*** ht_result %d  %d\n", res,  res == HT_FAIL );
+	is( res, 1, "zz not find [%d %.2s]", res, value);
+
+	ht_add(&ht, key, value);
+
+	int res2 = ht_check(&ht, key, value);
+	printf("*** ht_result %d\n", res2);
+	is( res2, 0, "zz find [%d %.2s]", res2, value);	
+
 
 	ht_free(&ht);
 
 	footer();
 }
 
+static void
+test_duble_add(void)
+{
+	header();
+
+	uint32_t key = 0xad198be0;
+	char value[2] = {'z','z'};
+
+	ht ht;
+	ht_init(&ht);
+
+	int res = ht_check(&ht, key, value);
+	printf("*** ht_result %d  %d\n", res,  res == HT_FAIL );
+	is( res, 1, "zz not find [%d %.2s]", res, value);
+
+	res = ht_add(&ht, key, value);
+	printf("*** result ht_add %d\n", res);
+
+	int res2 = ht_check(&ht, key, value);
+	printf("*** ht_result %d\n", res2);
+	is( res2, 0, "zz find [%d %.2s]", res2, value);	
+
+	int res5 = ht_add(&ht, key, value);
+	printf("*** result ht_add %d\n", res5);
+
+	int res3 = ht_check(&ht, key, value);
+	printf("*** duble ht_result %d\n", res3);
+	is( res3, 0, "zz find [%d %.2s]", res3, value);	
+
+	ht_free(&ht);
+
+	footer();
+}
+
+
 int
 main(void)
 {
+	plan(10);
+
 	test_not_add();
 	test_check();
+	test_duble_add();
 
+	check_plan();
 }
 

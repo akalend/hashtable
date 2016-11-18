@@ -98,6 +98,13 @@ ht_add(ht* ht, uint32_t key, const char* value)
 	if (i == HT_ERROR)
 		return HT_ERROR;
 
+	ht_element* el = ht_get(ht, key, i);
+
+	printf("'%.2s' ? '%.2s' i=%d\n",el->data, value, i);
+	if (memcmp(el->data, value, 2) == HT_OK) {
+		return HT_EXITS;
+	}
+
 	ht_set(ht, key, value, i);
 
 	return HT_OK;

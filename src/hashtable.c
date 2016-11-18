@@ -84,7 +84,7 @@ ht_set(ht* ht, uint32_t key, const char* value, int index)
 
 	ht_element *el = pline->elem + index;
 	el->key = ht_getrkey(key);
-	memcpy((void*)el->data, (const void*)value, 2);
+	memcpy((void*)el->data, value, 2);
 
 	return HT_OK;
 }
@@ -116,14 +116,14 @@ int ht_check(ht* ht, uint32_t key, const char* value)
 	while ( i < HT_ELEMENTS){
 		el = pline->elem[i];
 
-		if (el.key == rkey && !memcmp(el.data, value, 2)){
-			return HT_OK;
-		}
-	
 		if (el.key == 0){
 			return HT_FAIL;
 		}
 
+		if (el.key == rkey && !memcmp(el.data, value, 2)){
+			return HT_OK;
+		}
+	
 		i++;
 	}
 

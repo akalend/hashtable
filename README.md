@@ -1,4 +1,4 @@
-# hashtable - simple hashtable
+# simple hashtable
 
 tools/generate.py - генерация тестового файла
 tests - unit tests

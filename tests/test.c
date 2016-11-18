@@ -70,9 +70,32 @@ test_check(void)
 }
 
 
+
+static void
+test_not_add(void)
+{
+	header();
+
+	uint32_t key = 0xcd198be0;
+	char value[2] = {'z','z'};
+
+	ht ht;
+	ht_init(&ht);
+
+	int res = ht_check(&ht, key, value);
+	printf("ht_result %d\n", res);
+	is( res, 1, "zz not find [%d %.2s]", res, value);	
+
+	ht_free(&ht);
+
+	footer();
+}
+
 int
 main(void)
 {
+	test_not_add();
 	test_check();
+
 }
 

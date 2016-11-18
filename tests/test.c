@@ -33,25 +33,6 @@ test_set(void)
 
 
 static void
-test_add(void)
-{
-	header();
-
-	uint32_t key = 0xcd198be0;
-	char value[2] = {'a','b'};
-
-	ht ht;
-	ht_init(&ht);
-
-	ht_add(&ht, key, value);
-	is(1, 1, "test add");
-
-	ht_free(&ht);
-
-	footer();
-}
-
-static void
 test_find(void)
 {
 	header();
@@ -91,13 +72,44 @@ test_find(void)
 	footer();
 }
 
+
+static void
+test_add(void)
+{
+	header();
+
+	uint32_t key = 0xcd198be0;
+	char value[2] = {'a','b'};
+
+	ht ht;
+	ht_init(&ht);
+
+	ht_add(&ht, key, value);
+
+	value[0] = 'c';
+	value[1] = 'd';
+
+	ht_add(&ht, key, value);
+
+	ht_element* get_key = ht_get(&ht, key, 0);
+	is( strncmp("ab", get_key->data,2) , 0, "ab == data");
+
+	get_key = ht_get(&ht, key, 1);
+	is( strncmp("cd", get_key->data,2) , 0, "cd == data");
+
+
+	ht_free(&ht);
+
+	footer();
+}
+
 int
 main(void)
 {
 	// test_getlkey();
 	// test_getrkey();
-	// test_set();
-	// test_add();
+	// test_set();	
 	test_find();
+	test_add();
 }
 

@@ -34,12 +34,7 @@ typedef struct  {
 void ht_init( ht* ht);
 void ht_free( ht* ht);
 
-int ht_find_notnull(ht* ht, uint32_t key);
 int ht_add(ht* ht, uint32_t key, const char* value);
-
-int ht_set(ht* ht, uint32_t key, const char* value, int index);
-ht_element* ht_get(ht* ht, uint32_t key, int index);
-
 int ht_check(ht* ht, uint32_t key, const char* value);
 
 

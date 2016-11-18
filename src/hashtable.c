@@ -60,20 +60,6 @@ ht_find_notnull(ht* ht, uint32_t key)
 	return HT_ERROR;
 }
 
-int
-ht_add(ht* ht, uint32_t key, const char* value)
-{	
-	int i = ht_find_notnull(ht, key);
-
-	if (i == HT_ERROR)
-		return HT_ERROR;
-
-	ht_set(ht, key, value, i);
-
-	return HT_OK;
-}
-
-
 ht_element*
 ht_get(ht* ht, uint32_t key, int index)
 {
@@ -99,6 +85,20 @@ ht_set(ht* ht, uint32_t key, const char* value, int index)
 	ht_element *el = pline->elem + index;
 	el->key = ht_getrkey(key);
 	memcpy((void*)el->data, (const void*)value, 2);
+
+	return HT_OK;
+}
+
+
+int
+ht_add(ht* ht, uint32_t key, const char* value)
+{	
+	int i = ht_find_notnull(ht, key);
+
+	if (i == HT_ERROR)
+		return HT_ERROR;
+
+	ht_set(ht, key, value, i);
 
 	return HT_OK;
 }

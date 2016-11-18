@@ -5,8 +5,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <strings.h>
-
+#include <string.h>
 #include "crc32.c"
 #include "hashtable.h"
 
@@ -20,9 +19,6 @@ int main(int argc, char** argv )
 	ht_init(&ht);
 
 
-	ht_free(&ht);
-
-
     if( fp == NULL ) {  
     	printf("file not found\n");                     
         return 1;
@@ -31,7 +27,7 @@ int main(int argc, char** argv )
 	uint32_t crc_1 = 0xcd1944ce & 0xFFFF0000;
 
     int n = 100;
-    while( fgets(line,128,fp)  ) {
+    while( fgets(line,128,fp) && n--  ) {
 
     	size_t len = strlen(line);
 		
@@ -39,13 +35,16 @@ int main(int argc, char** argv )
 		
 		crc = crc32(crc, (const void *) line, len);
 
-		if ((crc & 0xFFFF0000) == crc_1) {
-        	printf("%d\t%x\t%s",(int)len, crc, line);
-    	}
+		ht_add(&ht, crc, line);
+		int res = ht_check(&ht, crc, line);
+		if (res == HT_OK) {
+			printf("%x:\t%d\t%10s\n", crc, res, line);
+		}
     }
 
 		
 
+	ht_free(&ht);
 
 	return 0;
 } 

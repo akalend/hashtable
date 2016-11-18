@@ -115,12 +115,19 @@ int ht_check(ht* ht, uint32_t key, const char* value)
 	int i = 0;
 	while ( i < HT_ELEMENTS){
 		el = pline->elem[i];
-		if (el.key == 0) 
-			return HT_OK;		
+
+		if (el.key == rkey && !memcmp(el.data, value, 2)){
+			return HT_OK;
+		}
+	
+		if (el.key == 0){
+			return HT_FAIL;
+		}
+
 		i++;
 	}
 
 
-	return HT_ERROR;	
+	return HT_FAIL;	
 }
 

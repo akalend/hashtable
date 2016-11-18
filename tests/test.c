@@ -108,11 +108,74 @@ test_add(void)
 	footer();
 }
 
+static void
+test_check(void)
+{
+	header();
+
+	uint32_t key = 0xcd198be0;
+	char value[2] = {'a','b'};
+
+	ht ht;
+	ht_init(&ht);
+
+	ht_add(&ht, key, value);
+
+	value[0] = 'c';
+	value[1] = 'd';
+	ht_add(&ht, key, value);
+
+	value[0] = 'x';
+	value[1] = 'z';
+	ht_add(&ht, key, value);
+
+	value[0] = 'a';
+	value[1] = 'b';
+
+	int res = ht_check(&ht, key, value);
+	is( res, HT_OK, "ab find [%d]", res);	
+
+
+	value[0] = 'a';
+	value[1] = 'c';
+
+	int res2 = ht_check(&ht, key, value);
+	is( res2 , 1, "ac find [%d, %.2s]", res, value);	
+
+	value[0] = 'c';
+	value[1] = 'd';
+
+	res = ht_check(&ht, key, value);
+	is( res, HT_OK, "cd find [%d]", res);	
+
+
+	value[0] = 'x';
+	value[1] = 'z';
+
+	res = ht_check(&ht, key, value);
+	is( res, HT_OK, "cd find [%d]", res);	
+
+
+	value[0] = 'c';
+	value[1] = 'd';
+
+	key++;
+	res = ht_check(&ht, key, value);
+	is( res, HT_FAIL, "## new key: cd find [%d]", res);	
+
+
+	ht_free(&ht);
+
+	footer();
+}
+
+
 int
 main(void)
 {
 	test_set();	
 	test_find();
 	test_add();
+	test_check();
 }
 

@@ -37,7 +37,7 @@ ht_free(ht* ht)
 }
 
 
-int
+static int
 ht_find_notnull(ht* ht, uint32_t key)
 {
 	ht_line* pline ;
@@ -59,7 +59,8 @@ ht_find_notnull(ht* ht, uint32_t key)
 	return HT_ERROR;
 }
 
-ht_element*
+
+static ht_element*
 ht_get(ht* ht, uint32_t key, int index)
 {
 	if (index >= HT_ELEMENTS)
@@ -72,7 +73,7 @@ ht_get(ht* ht, uint32_t key, int index)
 }
 
 
-int
+static int
 ht_set(ht* ht, uint32_t key, const char* value, int index)
 {
 	if (index >= HT_ELEMENTS)
@@ -83,7 +84,7 @@ ht_set(ht* ht, uint32_t key, const char* value, int index)
 
 	ht_element *el = pline->elem + index;
 	el->key = ht_getrkey(key);
-	memcpy((void*)el->data, value, 2);
+	memcpy((void*)el->data, value, HT_VALUE_SIZE);
 
 	return HT_OK;
 }
@@ -104,12 +105,12 @@ ht_add(ht* ht, uint32_t key, const char* value)
 		if (el->key == 0){
 			// add here
 			el->key = rkey;
-			memcpy(el->data, value, 2);
+			memcpy(el->data, value, HT_VALUE_SIZE);
 
 			return HT_OK;
 		}
 
-		if (el->key == rkey && !memcmp(el->data, value, 2)){
+		if (el->key == rkey && !memcmp(el->data, value, HT_VALUE_SIZE)){
 			return HT_EXITS;
 		}
 	
@@ -120,7 +121,8 @@ ht_add(ht* ht, uint32_t key, const char* value)
 }
 
 
-int ht_check(ht* ht, uint32_t key, const char* value)
+int 
+ht_check(ht* ht, uint32_t key, const char* value)
 {	
 	uint32_t rkey = ht_getrkey(key);
 	ht_line* pline ;
@@ -136,7 +138,7 @@ int ht_check(ht* ht, uint32_t key, const char* value)
 			return HT_FAIL;
 		}
 
-		if (el.key == rkey && !memcmp(el.data, value, 2)){
+		if (el.key == rkey && !memcmp(el.data, value, HT_VALUE_SIZE)){
 			return HT_OK;
 		}
 	

@@ -5,6 +5,9 @@
 #define BUCKET_SIZE 	65536
 #define LINE_SIZE 		sizeof(ht_line)
 #define HT_ELEMENTS 	64
+#define HT_VALUE_SIZE 	6
+
+
 #define HT_OK 			0
 #define HT_FAIL			1
 #define HT_EXITS		2
@@ -15,7 +18,7 @@
 
 typedef struct  {
 	uint16_t key;
-	char data[2];
+	char data[HT_VALUE_SIZE];
 } ht_element;
 
 typedef  struct  {

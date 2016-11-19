@@ -34,10 +34,12 @@ int main(int argc, char** argv )
 		res = ht_add(&ht, crc, line);
 		int is_exist = FALSE;	
 		if (res == HT_EXITS) {
-			is_exist = TRUE;			
+			is_exist = TRUE;
+		printf("%s\t%s\n", is_exist ? "YES" : "NO", line );
+
 		} 
 
-		printf("%s\n", is_exist ? "YES" : "NO" );
+		// printf("%s\n", is_exist ? "YES" : "NO" );
     }
 
 	ht_free(&ht);

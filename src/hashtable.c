@@ -40,7 +40,6 @@ ht_free(ht* ht)
 int
 ht_find_notnull(ht* ht, uint32_t key)
 {
-
 	ht_line* pline ;
 	HT_GETLINE(pline);
 
@@ -93,21 +92,31 @@ ht_set(ht* ht, uint32_t key, const char* value, int index)
 int
 ht_add(ht* ht, uint32_t key, const char* value)
 {	
-	int i = ht_find_notnull(ht, key);
+	
+	uint32_t rkey = ht_getrkey(key);
+	ht_line* pline ;
+	HT_GETLINE(pline);
 
-	if (i == HT_ERROR)
-		return HT_ERROR;
+	int i = 0;
+	while ( i < HT_ELEMENTS){
+		ht_element* el = &pline->elem[i];
 
-	ht_element* el = ht_get(ht, key, i);
+		if (el->key == 0){
+			// add here
+			el->key = rkey;
+			memcpy(el->data, value, 2);
 
-	printf("'%.2s' ? '%.2s' i=%d\n",el->data, value, i);
-	if (memcmp(el->data, value, 2) == HT_OK) {
-		return HT_EXITS;
+			return HT_OK;
+		}
+
+		if (el->key == rkey && !memcmp(el->data, value, 2)){
+			return HT_EXITS;
+		}
+	
+		i++;
 	}
 
-	ht_set(ht, key, value, i);
-
-	return HT_OK;
+	return HT_ERROR;
 }
 
 
@@ -134,7 +143,5 @@ int ht_check(ht* ht, uint32_t key, const char* value)
 		i++;
 	}
 
-
 	return HT_FAIL;	
 }
-

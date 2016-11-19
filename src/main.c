@@ -24,29 +24,21 @@ int main(int argc, char** argv )
     }
 
 	int res;
-    int n = 20;
-    while( fgets(line,128,fp) && n--  ) {
+    while( fgets(line,128,fp) ) {
 
     	size_t len = strlen(line);
 		
 		uint32_t crc = 0x0;
-		
 		crc = crc32(crc, (const void *) line, len);
 
-		if (0x61e4e146 == crc) {
-			printf("%x:***\t%10s", crc, line);
-		}
-
 		res = ht_add(&ht, crc, line);
-		printf("%d\t#%d. ", n, res);
+		int is_exist = FALSE;	
+		if (res == HT_EXITS) {
+			is_exist = TRUE;			
+		} 
 
-		res = ht_check(&ht, crc, line);
-		// if (res == HT_OK) {
-			printf("%x:\t%d\t%10s", crc, res, line);
-		// }
+		printf("%s\n", is_exist ? "YES" : "NO" );
     }
-
-		
 
 	ht_free(&ht);
 	fclose(fp);

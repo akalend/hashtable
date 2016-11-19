@@ -45,5 +45,5 @@ int main(int argc, char** argv )
 	ht_free(&ht);
 	fclose(fp);
 
-	return 0;
+	return EXIT_SUCCESS;
 } 

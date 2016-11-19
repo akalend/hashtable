@@ -137,5 +137,7 @@ main(void)
 	test_duble_add();
 
 	check_plan();
+
+	return EXIT_SUCCESS;
 }
 

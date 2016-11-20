@@ -3,14 +3,13 @@
 #define  __HTABLE_H_
 
 #define BUCKET_SIZE 	65536
-#define LINE_SIZE 		sizeof(ht_line)
 #define HT_ELEMENTS 	64
-#define HT_VALUE_SIZE 	6
+#define HT_VALUE_SIZE 	2
 
 
 #define HT_OK 			0
 #define HT_FAIL			1
-#define HT_EXITS		2
+#define HT_EXIST		2
 #define HT_ERROR 		-1
 
 #define TRUE			1
@@ -18,7 +17,7 @@
 
 typedef struct  {
 	uint16_t key;
-	char data[HT_VALUE_SIZE];
+	char hash[6] ;
 } ht_element;
 
 typedef  struct  {
@@ -30,7 +29,16 @@ typedef struct  {
 } ht;
 
 
-#define HT_GETLINE(pline) 			\
+typedef union {
+	uint64_t crc;
+	struct {
+		uint16_t  key;
+		char  hash[6];
+	};
+} ht_crc64;
+
+
+#define HT_GETLINE(pline,key) 		\
 	uint32_t lkey = ht_getlkey(key);\
 	pline = ht->line;				\
 	pline += lkey;
@@ -53,7 +61,6 @@ void ht_free( ht* ht);
 /**
 @brief добавление данных в хеш-таблицу
 @param ht*
-@param key
 @param value
 @return HT_RETUN_CODE
 Добавляются данные в хеш-таблицу. 
@@ -62,13 +69,12 @@ void ht_free( ht* ht);
  HT_EXITS	данные уже были вставлены ранее
  HT_ERROR 	ошибка переполнения
 */
-int ht_add(ht* ht, uint32_t key, const char* value);
+int ht_add(ht* ht, const char* value);
 
 
 /**
 @brief проверка наличия данных в хеш-таблице
 @param ht*
-@param key
 @param value
 @return HT_RETUN_CODE
 Осуществляет проверку наличия данных в хештаблице.
@@ -77,8 +83,7 @@ int ht_add(ht* ht, uint32_t key, const char* value);
  HT_OK 		данные сущетвуют
  HT_FAIL	данные не существуют
 */
-int ht_check(ht* ht, uint32_t key, const char* value);
-
+int ht_check(ht* ht, const char* value);
 
 
 #endif /* __HTABLE_H_  */

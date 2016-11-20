@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "crc64.c"
 #include "hashtable.h"
 
 
@@ -22,6 +23,19 @@ ht_getrkey(uint32_t key)
 	return key & 0x0000FFFF;
 }
 
+inline uint8_t
+ht_xor(const char* value, int len)
+{
+	char* p = (char*) value;
+	uint8_t xres = 0;
+	int i;
+	for(i=0; i < len; i++){
+		xres ^= *(p++);
+	}
+
+	return xres;
+};
+
 
 void
 ht_init(ht* ht)
@@ -37,66 +51,21 @@ ht_free(ht* ht)
 }
 
 
-static int
-ht_find_notnull(ht* ht, uint32_t key)
-{
-	ht_line* pline ;
-	HT_GETLINE(pline);
-
-	ht_element el = pline->elem[0];
-
-	if (el.key == 0)
-		return 0;
-
-	int i = 0;
-	while ( i < HT_ELEMENTS){
-		el = pline->elem[i];
-		if (el.key == 0) 
-			return i;		
-		i++;
-	}
-
-	return HT_ERROR;
-}
-
-
-static ht_element*
-ht_get(ht* ht, uint32_t key, int index)
-{
-	if (index >= HT_ELEMENTS)
-		exit(7);
-
-	ht_line* pline ;
-	HT_GETLINE(pline);
-
-	return &pline->elem[index];
-}
-
-
-static int
-ht_set(ht* ht, uint32_t key, const char* value, int index)
-{
-	if (index >= HT_ELEMENTS)
-		return HT_ERROR;
-
-	ht_line* pline = ht->line;
-	pline += ht_getlkey(key);
-
-	ht_element *el = pline->elem + index;
-	el->key = ht_getrkey(key);
-	memcpy((void*)el->data, value, HT_VALUE_SIZE);
-
-	return HT_OK;
-}
-
-
 int
-ht_add(ht* ht, uint32_t key, const char* value)
+ht_add(ht* ht, const char* value)
 {	
 	
-	uint32_t rkey = ht_getrkey(key);
+	size_t len = strlen(value) - 1;
+
+	if (len <= 0)
+		return HT_ERROR;
+
+	ht_crc64 crc_s;
+	crc_s.crc = crc64(0,(unsigned char*)value,(uint64_t)len);
+
+	uint32_t rkey = ht_getrkey(crc_s.key);
 	ht_line* pline ;
-	HT_GETLINE(pline);
+	HT_GETLINE(pline,crc_s.key);
 
 	int i = 0;
 	while ( i < HT_ELEMENTS){
@@ -105,13 +74,13 @@ ht_add(ht* ht, uint32_t key, const char* value)
 		if (el->key == 0){
 			// add here
 			el->key = rkey;
-			memcpy(el->data, value, HT_VALUE_SIZE);
+			memcpy(el->hash, crc_s.hash, HT_VALUE_SIZE);
 
 			return HT_OK;
 		}
 
-		if (el->key == rkey && !memcmp(el->data, value, HT_VALUE_SIZE)){
-			return HT_EXITS;
+		if (el->key == rkey && ! memcmp(el->hash, crc_s.hash, HT_VALUE_SIZE)){
+			return HT_EXIST;
 		}
 	
 		i++;
@@ -122,11 +91,19 @@ ht_add(ht* ht, uint32_t key, const char* value)
 
 
 int 
-ht_check(ht* ht, uint32_t key, const char* value)
+ht_check(ht* ht, const char* value)
 {	
-	uint32_t rkey = ht_getrkey(key);
+	size_t len = strlen(value) - 1;
+
+	if (len <= 0)
+		return HT_ERROR;
+
+	ht_crc64 crc_s;
+	crc_s.crc = crc64(0,(unsigned char*)value,(uint64_t)len);
+
+	uint32_t rkey = ht_getrkey(crc_s.key);
 	ht_line* pline ;
-	HT_GETLINE(pline);
+	HT_GETLINE(pline,crc_s.key);
 
 	ht_element el = pline->elem[0];
 
@@ -137,8 +114,8 @@ ht_check(ht* ht, uint32_t key, const char* value)
 		if (el.key == 0){
 			return HT_FAIL;
 		}
-
-		if (el.key == rkey && !memcmp(el.data, value, HT_VALUE_SIZE)){
+		
+		if (el.key == rkey && ! memcmp(el.hash, crc_s.hash, HT_VALUE_SIZE)){
 			return HT_OK;
 		}
 	

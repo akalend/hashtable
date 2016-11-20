@@ -6,14 +6,32 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include "crc32.c"
+#include <errno.h>
+
 #include "hashtable.h"
 
+#define LINE_SIZE 	128
 
 int main(int argc, char** argv )
 {
-	FILE* fp = fopen("../tools/test.file.txt", "r");
-	char line[128];
+	
+
+	if (argc == 1 || argc > 2) {
+		printf("Usage: %s <filename>\n", argv[0]);
+		return EXIT_SUCCESS;
+	}
+
+
+	FILE* fp = fopen( argv[1], "r");
+
+
+	if (fp == NULL) {
+
+		printf("Cannot open file: %s\n", strerror(errno));
+		return EXIT_SUCCESS;
+	}
+
+	char line[LINE_SIZE];
 
 	ht ht;
 	ht_init(&ht);
@@ -23,27 +41,30 @@ int main(int argc, char** argv )
         return 1;
     }
 
-	int res;
-    while( fgets(line,128,fp) ) {
+    while( fgets(line,LINE_SIZE,fp) ) {
 
-    	size_t len = strlen(line);
-		
-		uint32_t crc = 0x0;
-		crc = crc32(crc, (const void *) line, len);
-
-		res = ht_add(&ht, crc, line);
-		int is_exist = FALSE;	
-		if (res == HT_EXITS) {
-			is_exist = TRUE;
-		printf("%s\t%s\n", is_exist ? "YES" : "NO", line );
-
-		} 
-
-		// printf("%s\n", is_exist ? "YES" : "NO" );
+		int res = ht_add(&ht, line);
+		if (res == HT_EXIST)
+			printf("len=%d\t%s",(int)strlen(line), line);
     }
 
-	ht_free(&ht);
 	fclose(fp);
 
+    while( fgets(line,LINE_SIZE,stdin) ) {
+		
+
+		int res = ht_check(&ht, line);
+
+		if ( strncmp(line,"exit", 4) == HT_OK ) {
+			ht_free(&ht);
+			return EXIT_SUCCESS;
+		}
+		printf("len=%d[%d] %s\n", res,(int)strlen(line), line);
+		printf("%s\n", (res == HT_OK ? "YES" : "NO") );
+
+	}
+
+
+	ht_free(&ht);
 	return EXIT_SUCCESS;
 } 

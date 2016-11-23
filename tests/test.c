@@ -32,27 +32,27 @@ test_check(void)
 	value[0] = 'a';
 	value[1] = 'b';
 
-	int res = ht_check(&ht, key, value);
+	int res = ht_check(&ht, value);
 	is( res, HT_OK, "ab find [%d]", res);	
 
 
 	value[0] = 'a';
 	value[1] = 'c';
 
-	int res2 = ht_check(&ht, key, value);
+	int res2 = ht_check(&ht, value);
 	is( res2 , 1, "ac find [%d, %.2s]", res, value);	
 
 	value[0] = 'c';
 	value[1] = 'd';
 
-	res = ht_check(&ht, key, value);
+	res = ht_check(&ht, value);
 	is( res, HT_OK, "cd find [%d]", res);	
 
 
 	value[0] = 'x';
 	value[1] = 'z';
 
-	res = ht_check(&ht, key, value);
+	res = ht_check(&ht, value);
 	is( res, HT_OK, "cd find [%d]", res);	
 
 
@@ -60,7 +60,7 @@ test_check(void)
 	value[1] = 'd';
 
 	key++;
-	int res3 = ht_check(&ht, key, value);
+	int res3 = ht_check(&ht, value);
 	is( res3, HT_FAIL, "## new key: cd find [%d]", res3);
 
 
@@ -82,13 +82,13 @@ test_not_add(void)
 	ht ht;
 	ht_init(&ht);
 
-	int res = ht_check(&ht, key, value);
+	int res = ht_check(&ht, value);
 	printf("*** ht_result %d  %d\n", res,  res == HT_FAIL );
 	is( res, 1, "zz not find [%d %.2s]", res, value);
 
 	ht_add(&ht, value);
 
-	int res2 = ht_check(&ht, key, value);
+	int res2 = ht_check(&ht, value);
 	is( res2, 0, "zz find [%d %.2s]", res2, value);	
 
 
@@ -108,17 +108,17 @@ test_duble_add(void)
 	ht ht;
 	ht_init(&ht);
 
-	int res = ht_check(&ht, key, value);
+	int res = ht_check(&ht, value);
 	is( res, 1, "zz not find [%d %.2s]", res, value);
 
 	res = ht_add(&ht, value);
 
-	int res2 = ht_check(&ht, key, value);
+	int res2 = ht_check(&ht, value);
 	is( res2, 0, "zz find [%d %.2s]", res2, value);	
 
 	int res5 = ht_add(&ht, value);
 
-	int res3 = ht_check(&ht, key, value);
+	int res3 = ht_check(&ht, value);
 	is( res3, 0, "zz find [%d %.2s]", res3, value);	
 
 	ht_free(&ht);
